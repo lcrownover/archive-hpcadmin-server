@@ -45,6 +45,7 @@ class User(Base):
     groups: Mapped[list["Group"]] = relationship(
         secondary=group_user_association_table, back_populates="users"
     )
+    # TODO(lcrown): this aint working
     sponsor_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True)
     sponsor: Mapped["User"] = relationship("User", remote_side=[id])
     is_pi: Mapped[bool] = mapped_column(Boolean, default=False)

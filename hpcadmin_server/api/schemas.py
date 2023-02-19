@@ -46,6 +46,7 @@ class GroupCreate(GroupBase):
     pass
 
 
+# TODO(lcrown): sponsor not working
 class User(UserCreate):
     id: int
     sponsor: Union[UserBase, None]

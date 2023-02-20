@@ -5,23 +5,27 @@ from datetime import datetime
 
 
 class UserBase(BaseModel):
-    pass
-
-    class Config:
-        orm_mode = True
-
-
-class UserSignature(UserBase):
-    id: int
-    username: str
-
-
-class UserCreate(UserBase):
     username: str
     firstname: str
     lastname: str
     email: str
     is_pi: bool
+
+    class Config:
+        orm_mode = True
+
+
+# Used as a shortened version of a user object
+# to return in json
+class UserSignature(BaseModel):
+    id: int
+    username: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserCreate(UserBase):
     sponsor_id: Union[int, None]
 
 
@@ -32,8 +36,20 @@ class PirgBase(BaseModel):
         orm_mode = True
 
 
+# Used as a shortened version of a user object
+# to return in json
+class PirgSignature(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
 class PirgCreate(PirgBase):
     owner_id: int
+    admin_ids: Union[list[int], None]
+    user_ids: Union[list[int], None]
 
 
 class GroupBase(BaseModel):
@@ -48,9 +64,10 @@ class GroupCreate(GroupBase):
     pass
 
 
-class User(UserCreate):
+class User(UserBase):
     id: int
-    pirgs: list[PirgBase]
+    sponsor: Union[UserSignature, None]
+    pirgs: list[PirgSignature]
     groups: list[GroupBase]
     created_at: datetime
     updated_at: datetime
@@ -59,7 +76,7 @@ class User(UserCreate):
 class Pirg(PirgBase):
     id: int
     owner: UserSignature
-    admins: list[UserBase]
+    admins: list[UserSignature]
     users: list[UserSignature]
     groups: list[GroupBase]
     created_at: datetime

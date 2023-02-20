@@ -54,6 +54,7 @@ class User(Base):
     sponsor_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id"), nullable=True
     )
+    sponsor: Mapped[Optional["User"]] = relationship(remote_side=[id])
     is_pi: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[str] = mapped_column(
         TIMESTAMP(timezone=True), server_default=func.now()

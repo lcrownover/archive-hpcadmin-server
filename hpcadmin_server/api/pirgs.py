@@ -21,7 +21,7 @@ async def get_pirgs(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=schemas.Pirg)
 async def post_pirg(pirg_create: schemas.PirgCreate, db: Session = Depends(get_db)):
-    db_pirg = crud.get_pirg_by_name(db=db, name=pirg_create.name)
+    db_pirg = crud.get_pirg_by_name(db=db, pirg_name=pirg_create.name)
     if db_pirg:
         raise HTTPException(status_code=400, detail="Pirg already exists")
     if not crud.get_user(db=db, user_id=pirg_create.owner_id):
@@ -33,7 +33,7 @@ async def post_pirg(pirg_create: schemas.PirgCreate, db: Session = Depends(get_d
 async def post_pirg_users(
     pirg_name: str, user: schemas.PirgAddUser, db: Session = Depends(get_db)
 ):
-    db_pirg = crud.get_pirg_by_name(db=db, name=pirg_name)
+    db_pirg = crud.get_pirg_by_name(db=db, pirg_name=pirg_name)
     if not db_pirg:
         raise HTTPException(status_code=404, detail="Pirg not found")
     db_user = crud.get_user(db=db, user_id=user.user_id)

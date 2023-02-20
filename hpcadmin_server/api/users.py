@@ -4,6 +4,7 @@ from . import schemas
 from ..database import crud
 from ..database.db import get_db
 
+
 router = APIRouter(
     prefix="/users",
     tags=["users"],

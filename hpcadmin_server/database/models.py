@@ -1,4 +1,5 @@
-from sqlalchemy import String, ForeignKey, Boolean, TIMESTAMP, Column, Table
+from typing import Optional
+from sqlalchemy import String, ForeignKey, Boolean, TIMESTAMP, Column, Table, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -7,30 +8,35 @@ from .db import Base
 pirg_user_association_table = Table(
     "pirg_user_association_table",
     Base.metadata,
-    Column("user_id", ForeignKey("users.id"), primary_key=True),
-    Column("pirg_id", ForeignKey("pirgs.id"), primary_key=True),
+    Column("id", Integer, primary_key=True),
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("pirg_id", Integer, ForeignKey("pirgs.id")),
 )
 
 pirg_admin_association_table = Table(
     "pirg_admin_association_table",
     Base.metadata,
-    Column("user_id", ForeignKey("users.id"), primary_key=True),
-    Column("pirg_id", ForeignKey("pirgs.id"), primary_key=True),
+    Column("id", Integer, primary_key=True),
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("pirg_id", Integer, ForeignKey("pirgs.id")),
 )
 
 pirg_group_association_table = Table(
     "pirg_group_association_table",
     Base.metadata,
-    Column("pirg_id", ForeignKey("pirgs.id"), primary_key=True),
-    Column("group_id", ForeignKey("groups.id"), primary_key=True),
+    Column("id", Integer, primary_key=True),
+    Column("pirg_id", Integer, ForeignKey("pirgs.id")),
+    Column("group_id", Integer, ForeignKey("groups.id")),
 )
 
 group_user_association_table = Table(
     "group_user_association_table",
     Base.metadata,
-    Column("group_id", ForeignKey("groups.id"), primary_key=True),
-    Column("user_id", ForeignKey("users.id"), primary_key=True),
+    Column("id", Integer, primary_key=True),
+    Column("group_id", Integer, ForeignKey("groups.id")),
+    Column("user_id", Integer, ForeignKey("users.id")),
 )
+
 
 class User(Base):
     __tablename__ = "users"
@@ -45,9 +51,9 @@ class User(Base):
     groups: Mapped[list["Group"]] = relationship(
         secondary=group_user_association_table, back_populates="users"
     )
-    # TODO(lcrown): this aint working
-    sponsor_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True)
-    sponsor: Mapped["User"] = relationship("User", remote_side=[id])
+    sponsor_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
     is_pi: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[str] = mapped_column(
         TIMESTAMP(timezone=True), server_default=func.now()

@@ -1,23 +1,24 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
-from . import models
+from .models import User, Pirg, Group
 from ..api import schemas
 
 
 def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+    return db.query(User).filter_by(id=user_id).first()
 
 
 def get_user_by_username(db: Session, username: str):
-    return db.query(models.User).filter(models.User.username == username).first()
+    return db.query(User).filter_by(username=username).first()
 
 
 def get_users(db: Session):
-    return db.query(models.User).all()
+    return db.query(User).all()
 
 
 def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(
+    db_user = User(
         username=user.username,
         firstname=user.firstname,
         lastname=user.lastname,
@@ -32,24 +33,41 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 
 def get_pirg(db: Session, pirg_id: int):
-    return db.query(models.Pirg).filter(models.Pirg.id == pirg_id).first()
+    # return (
+    #     db.query(Pirg)
+    #     .join(Pirg.users)
+    #     .filter(Pirg.id == pirg_id)
+    #     .first()
+    # )
+    statement = select(Pirg).filter_by(id=pirg_id)
+    return db.scalar(statement)
 
 
-def get_pirg_by_name(db: Session, name: str):
-    return db.query(models.Pirg).filter(models.Pirg.name == name).first()
+def get_pirg_by_name(db: Session, pirg_name: str):
+    statement = select(Pirg).filter_by(name=pirg_name)
+    return db.scalar(statement)
+    # return (
+    #     db.query(Pirg)
+    #     .join(Pirg.users)
+    #     .filter(Pirg.name == pirg_name)
+    #     .first()
+    # )
 
 
 def get_pirgs(db: Session):
-    return db.query(models.Pirg).all()
+    return db.query(Pirg).all()
 
 
 def create_pirg(db: Session, pirg: schemas.PirgCreate):
-    owner = db.query(models.User).filter(models.User.id == pirg.owner_id).first()
+    # Check to make sure the owner exists,
+    # otherwise raise an error
+    owner = db.query(User).filter(User.id == pirg.owner_id).first()
     if not owner:
         raise Exception("error findiner user in database")
-    db_pirg = models.Pirg(
+    # Create the pirg with the minimum requirements
+    db_pirg = Pirg(
         name=pirg.name,
-        owner_id=owner.id,
+        owner_id=pirg.owner_id,
     )
     db.add(db_pirg)
     db.commit()
@@ -57,7 +75,7 @@ def create_pirg(db: Session, pirg: schemas.PirgCreate):
     return db_pirg
 
 
-def add_user_to_pirg(db: Session, pirg: models.Pirg, user: models.User):
+def add_user_to_pirg(db: Session, pirg: Pirg, user: User):
     pirg.users.append(user)
     db.add(pirg)
     db.commit()
@@ -71,4 +89,4 @@ def add_user_to_pirg(db: Session, pirg: models.Pirg, user: models.User):
 
 
 def get_groups(db: Session):
-    return db.query(models.Group).all()
+    return db.query(Group).all()

@@ -21,14 +21,6 @@ pirg_admin_association_table = Table(
     Column("pirg_id", Integer, ForeignKey("pirgs.id")),
 )
 
-pirg_group_association_table = Table(
-    "pirg_group_association_table",
-    Base.metadata,
-    Column("id", Integer, primary_key=True),
-    Column("pirg_id", Integer, ForeignKey("pirgs.id")),
-    Column("group_id", Integer, ForeignKey("groups.id")),
-)
-
 group_user_association_table = Table(
     "group_user_association_table",
     Base.metadata,
@@ -74,7 +66,7 @@ class Pirg(Base):
     users: Mapped[list["User"]] = relationship(
         secondary=pirg_user_association_table, back_populates="pirgs"
     )
-    groups: Mapped[list["Group"]] = relationship(secondary=pirg_group_association_table)
+    groups: Mapped[list["Group"]] = relationship(back_populates="pirg")
     created_at: Mapped[str] = mapped_column(
         TIMESTAMP(timezone=True), server_default=func.now()
     )
@@ -87,9 +79,8 @@ class Group(Base):
     __tablename__ = "groups"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), unique=True)
-    pirg: Mapped["Pirg"] = relationship(
-        secondary=pirg_group_association_table, back_populates="groups"
-    )
+    pirg_id: Mapped[int] = mapped_column(ForeignKey("pirgs.id"))
+    pirg: Mapped["Pirg"] = relationship(back_populates="groups")
     users: Mapped[list["User"]] = relationship(
         secondary=group_user_association_table, back_populates="groups"
     )

@@ -80,19 +80,22 @@ async def get_pirg_groups(pirg_name: str, db: Session = Depends(get_db)):
 
 @router.post("/{pirg_name}/groups", response_model=schemas.Group)
 async def post_pirg_groups(
-    pirg_name: str, group: schemas.PirgAddGroup, db: Session = Depends(get_db)
+    pirg_name: str, group: schemas.GroupCreate, db: Session = Depends(get_db)
 ):
+    # make sure the pirg exists
     db_pirg = crud.get_pirg_by_name(db=db, name=pirg_name)
     if not db_pirg:
         raise HTTPException(status_code=404, detail="Pirg not found")
+    # make sure the group doesn't already exist
     db_group = crud.get_pirg_group_by_name(db=db, name=group.name)
     if db_group:
         raise HTTPException(status_code=400, detail="Group already exists")
+    # make sure all the users exist
     for user_id in group.user_ids:
         db_user = crud.get_user(db=db, id=user_id)
         if not db_user:
             raise HTTPException(status_code=404, detail="User not found")
-    return crud.add_group_to_pirg(db=db, pirg=db_pirg, group=group)
+    return crud.create_pirg_group(db=db, group=group)
 
 
 @router.post("/{pirg_name}/groups/{group_id}/users", response_model=schemas.Group)

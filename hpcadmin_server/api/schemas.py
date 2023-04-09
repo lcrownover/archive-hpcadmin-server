@@ -78,7 +78,7 @@ class GroupBase(BaseModel):
 
 class GroupCreate(GroupBase):
     pirg_id: int
-    user_ids: Union[int, None]
+    user_ids: list[int]
 
 
 class GroupSignature(BaseModel):
@@ -89,10 +89,10 @@ class GroupSignature(BaseModel):
         orm_mode = True
 
 
-class PirgAddGroup(BaseModel):
-    name: str
-    user_ids: list[int]
-
+# class PirgAddGroup(BaseModel):
+#     name: str
+#     user_ids: list[int]
+#
 
 class PirgGroupName(BaseModel):
     group_name: str

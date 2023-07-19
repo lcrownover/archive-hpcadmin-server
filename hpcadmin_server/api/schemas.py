@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+from pydantic.dataclasses import dataclass
 
 from datetime import datetime
 from enum import Enum
@@ -7,6 +8,8 @@ from enum import Enum
 # {'status': 'success', 'results': Pirg}
 # So then i can make return values more predictable
 #
+
+config = ConfigDict(from_attributes=True)
 
 
 class Status(Enum):
@@ -18,15 +21,13 @@ class SimpleStatus(BaseModel):
     status: Status
 
 
-class UserBase(BaseModel):
+@dataclass(config=config)
+class UserBase:
     username: str
     firstname: str
     lastname: str
     email: str
     is_pi: bool
-
-    class ConfigDict:
-        from_attributes = True
 
 
 class UserId(BaseModel):
@@ -35,31 +36,25 @@ class UserId(BaseModel):
 
 # Used as a shortened version of a user object
 # to return in json
-class UserSignature(BaseModel):
+@dataclass(config=config)
+class UserSignature:
     id: int
     username: str
-
-    class ConfigDict:
-        from_attributes = True
 
 
 class UserCreate(UserBase):
     sponsor_id: int | None
 
 
-class PirgBase(BaseModel):
+@dataclass(config=config)
+class PirgBase:
     name: str
 
-    class ConfigDict:
-        from_attributes = True
 
-
-class PirgSignature(BaseModel):
+@dataclass(config=config)
+class PirgSignature:
     id: int
     name: str
-
-    class ConfigDict:
-        from_attributes = True
 
 
 class PirgCreate(PirgBase):
@@ -68,11 +63,9 @@ class PirgCreate(PirgBase):
     user_ids: list[int] | None
 
 
-class GroupBase(BaseModel):
+@dataclass(config=config)
+class GroupBase:
     name: str
-
-    class ConfigDict:
-        from_attributes = True
 
 
 class GroupCreate(GroupBase):
@@ -80,12 +73,10 @@ class GroupCreate(GroupBase):
     user_ids: list[int]
 
 
-class GroupSignature(BaseModel):
+@dataclass(config=config)
+class GroupSignature:
     id: int
     name: str
-
-    class ConfigDict:
-        from_attributes = True
 
 
 # class PirgAddGroup(BaseModel):

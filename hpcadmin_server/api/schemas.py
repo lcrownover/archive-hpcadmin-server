@@ -26,8 +26,8 @@ class UserBase(BaseModel):
     email: str
     is_pi: bool
 
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 
 class UserId(BaseModel):
@@ -40,8 +40,8 @@ class UserSignature(BaseModel):
     id: int
     username: str
 
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 
 class UserCreate(UserBase):
@@ -51,16 +51,16 @@ class UserCreate(UserBase):
 class PirgBase(BaseModel):
     name: str
 
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 
 class PirgSignature(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 
 class PirgCreate(PirgBase):
@@ -72,8 +72,8 @@ class PirgCreate(PirgBase):
 class GroupBase(BaseModel):
     name: str
 
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 
 class GroupCreate(GroupBase):
@@ -85,8 +85,8 @@ class GroupSignature(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 
 # class PirgAddGroup(BaseModel):

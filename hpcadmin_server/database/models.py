@@ -1,4 +1,3 @@
-from typing import Optional
 from sqlalchemy import String, ForeignKey, Boolean, TIMESTAMP, Column, Table, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -43,10 +42,10 @@ class User(Base):
     groups: Mapped[list["Group"]] = relationship(
         secondary=group_user_association_table, back_populates="users"
     )
-    sponsor_id: Mapped[Optional[int]] = mapped_column(
+    sponsor_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"), nullable=True
     )
-    sponsor: Mapped[Optional["User"]] = relationship(remote_side=[id])
+    sponsor: Mapped["User" | None] = relationship(remote_side=[id])
     is_pi: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[str] = mapped_column(
         TIMESTAMP(timezone=True), server_default=func.now()

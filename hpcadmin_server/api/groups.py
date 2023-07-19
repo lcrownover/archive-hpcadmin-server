@@ -12,6 +12,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+
 @router.get("/", response_model=list[schemas.Group])
 async def get_groups(db: Session = Depends(get_db)):
     groups = crud.get_pirg_groups(db)

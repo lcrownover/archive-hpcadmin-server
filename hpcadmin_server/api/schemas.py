@@ -1,4 +1,3 @@
-from typing import Union
 from pydantic import BaseModel
 
 from datetime import datetime
@@ -45,7 +44,7 @@ class UserSignature(BaseModel):
 
 
 class UserCreate(UserBase):
-    sponsor_id: Union[int, None]
+    sponsor_id: int | None
 
 
 class PirgBase(BaseModel):
@@ -65,8 +64,8 @@ class PirgSignature(BaseModel):
 
 class PirgCreate(PirgBase):
     owner_id: int
-    admin_ids: Union[list[int], None]
-    user_ids: Union[list[int], None]
+    admin_ids: list[int] | None
+    user_ids: list[int] | None
 
 
 class GroupBase(BaseModel):
@@ -94,13 +93,14 @@ class GroupSignature(BaseModel):
 #     user_ids: list[int]
 #
 
+
 class PirgGroupName(BaseModel):
     group_name: str
 
 
 class User(UserBase):
     id: int
-    sponsor: Union[UserSignature, None]
+    sponsor: UserSignature | None
     pirgs: list[PirgSignature]
     groups: list[GroupBase]
     created_at: datetime
